@@ -14,30 +14,55 @@
     <!-- HLS Support -->
     <script src="https://unpkg.com/videojs-flash/dist/videojs-flash.js"></script>
     <script src="https://unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
-  </head>
-  <body>
-    <h2>MPEG-DASH</h2>
-    <video id="dash" class="video-js vjs-default-skin" controls></video>
-    <script>
-      var dash = videojs('dash');
-      dash.ready(function() {
-        dash.src({
-          src: '/videos/dash.mpd',
-          type: 'application/dash+xml'
-        });
-      });
-    </script>
 
-    <h2>HLS</h2>
-    <video id="hls" class="video-js vjs-default-skin" controls></video>
-    <script>
-      var hls = videojs('hls');
-      hls.ready(function() {
-        hls.src({
-          src: '/videos/hls.m3u8',
-          type: 'application/x-mpegURL'
-        });
-      });
-    </script>
+    <!-- Bootstrap -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous" />
+  </head>
+  <body class="text-light" style="background-color: black;">
+    <div class="container h-100">
+      <div class="row h-100 justify-content-center align-items-center">
+
+        <!-- MPEG DASH
+        <div class="col-12">
+          <div class="embed-responsive embed-responsive-16by9">
+            <video id="dash" class="video-js vjs-default-skin" controls></video>
+          </div>
+          <script>
+            var dash = videojs('dash');
+            dash.ready(function() {
+              dash.src({
+                src: '/videos/dash.mpd',
+                type: 'application/dash+xml'
+              });
+            });
+            dash.one('loadedmetadata', function(event) {
+              dash.currentTime(0);
+            })
+          </script>
+        </div>
+        -->
+
+        <!-- HLS -->
+        <div class="col-12">
+          <div class="embed-responsive embed-responsive-16by9">
+            <video id="hls" class="embed-responsive-item video-js vjs-default-skin" controls autoplay style="margin: 0 auto;"></video>
+          </div>
+          <script>
+            var hls = videojs('hls');
+            hls.ready(function() {
+              hls.src({
+                src: '/videos/hls.m3u8',
+                type: 'application/x-mpegURL'
+              });
+            });
+
+            hls.one('loadedmetadata', function(event) {
+              hls.currentTime(0);
+            })
+          </script>
+        </div>
+
+      </div>
+    </div>
   </body>
 </html>
