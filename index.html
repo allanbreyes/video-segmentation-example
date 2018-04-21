@@ -17,19 +17,27 @@
   </head>
   <body>
     <h2>MPEG-DASH</h2>
-    <video id="dash" class="video-js vjs-default-skin" controls>
-      <source src="/videos/dash.mpd" type="application/dash+xml" />
-    </video>
+    <video id="dash" class="video-js vjs-default-skin" controls></video>
     <script>
       var dash = videojs('dash');
+      dash.ready(function() {
+        dash.src({
+          src: '/videos/dash.mpd',
+          type: 'application/dash+xml'
+        });
+      });
     </script>
 
     <h2>HLS</h2>
-    <video id="hls" class="video-js vjs-default-skin" controls>
-      <source src="/videos/hls.m3u8" type="application/x-mpegURL" />
-    </video>
+    <video id="hls" class="video-js vjs-default-skin" controls></video>
     <script>
       var hls = videojs('hls');
+      hls.ready(function() {
+        hls.src({
+          src: '/videos/hls.m3u8',
+          type: 'application/x-mpegURL'
+        });
+      });
     </script>
   </body>
 </html>
