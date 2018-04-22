@@ -21,11 +21,11 @@ hls: videos/hls.m3u8
 
 export STREAMHEADER
 stream: clean
-stream: sample.mlt
 stream:
 	@echo 'Rendering on-the-fly, using $(CORES) cores...'
 	@echo "$$STREAMHEADER" > ./videos/hls.m3u8
-	melt sample.mlt \
+	sed 's/{{name}}/$(USER)/g' template.mlt > sample.tmp.mlt
+	melt sample.tmp.mlt \
 		-consumer avformat:videos/hls.m3u8 \
 		s=$(RESOLUTION) \
 		preset=ultrafast \
@@ -35,6 +35,7 @@ stream:
 		real_time=-$(CORES) \
 		skip_loop_filter=all \
 		skip_frame=bidir
+	rm sample.tmp.mlt
 
 clean:
 	@echo 'Cleaning up...'
@@ -64,7 +65,3 @@ videos/hls.m3u8:
 		-hls_list_size 0 \
 		-f hls \
 		hls.m3u8
-
-sample.mlt:
-	@echo 'Reifying template...'
-	sed 's/{{name}}/$(USER)/g' template.mlt > sample.mlt
