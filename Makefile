@@ -1,5 +1,15 @@
-CORES ?= $(shell nproc)
+CORES      ?= $(shell nproc)
 RESOLUTION := 1280x720
+USER       ?= world!
+export
+
+define STREAMHEADER
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-TARGETDURATION:11
+#EXT-X-MEDIA-SEQUENCE:0
+endef
+
 .PHONY: all clean dash hls stream
 
 all: videos/sample.mp4
@@ -8,17 +18,23 @@ all: hls
 
 dash: videos/dash.mpd
 hls: videos/hls.m3u8
+
+export STREAMHEADER
 stream: clean
+stream: sample.mlt
+stream:
 	@echo 'Rendering on-the-fly, using $(CORES) cores...'
-	melt four.mlt \
+	@echo "$$STREAMHEADER" > ./videos/hls.m3u8
+	melt sample.mlt \
 		-consumer avformat:videos/hls.m3u8 \
 		s=$(RESOLUTION) \
-		crf=30 \
 		preset=ultrafast \
 		start_number=0 \
 		hls_time=4 \
 		hls_list_size=0 \
-		real_time=-$(CORES)
+		real_time=-$(CORES) \
+		skip_loop_filter=all \
+		skip_frame=bidir
 
 clean:
 	@echo 'Cleaning up...'
@@ -48,3 +64,7 @@ videos/hls.m3u8:
 		-hls_list_size 0 \
 		-f hls \
 		hls.m3u8
+
+sample.mlt:
+	@echo 'Reifying template...'
+	sed 's/{{name}}/$(USER)/g' template.mlt > sample.mlt
