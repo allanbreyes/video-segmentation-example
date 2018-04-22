@@ -1,5 +1,6 @@
+CORES ?= $(shell nproc)
 RESOLUTION := 1280x720
-.PHONY: all clean dash hls
+.PHONY: all clean dash hls stream
 
 all: videos/sample.mp4
 # all: dash
@@ -7,6 +8,17 @@ all: hls
 
 dash: videos/dash.mpd
 hls: videos/hls.m3u8
+stream: clean
+	@echo 'Rendering on-the-fly, using $(CORES) cores...'
+	melt four.mlt \
+		-consumer avformat:videos/hls.m3u8 \
+		s=$(RESOLUTION) \
+		crf=30 \
+		preset=ultrafast \
+		start_number=0 \
+		hls_time=4 \
+		hls_list_size=0 \
+		real_time=-$(CORES)
 
 clean:
 	@echo 'Cleaning up...'
