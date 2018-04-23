@@ -29,6 +29,7 @@ stream:
 	sed 's/{{name}}/$(USER)/g' $(TEMPLATE) > template.mlt
 	melt template.mlt \
 		-consumer avformat:videos/hls.m3u8 \
+		vcodec=$(VCODEC) \
 		f=hls \
 		preset=fast \
 		s=$(RESOLUTION) \
