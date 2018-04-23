@@ -1,6 +1,8 @@
 CORES      ?= $(shell nproc)
 RESOLUTION := 1280x720
 USER       ?= world!
+TEMPLATE   ?= shotcut.mlt
+VCODEC     ?= h264_nvenc
 export
 
 define STREAMHEADER
@@ -24,18 +26,20 @@ stream: clean
 stream:
 	@echo 'Rendering on-the-fly, using $(CORES) cores...'
 	@echo "$$STREAMHEADER" > ./videos/hls.m3u8
-	sed 's/{{name}}/$(USER)/g' template.mlt > sample.tmp.mlt
-	melt sample.tmp.mlt \
+	sed 's/{{name}}/$(USER)/g' $(TEMPLATE) > template.mlt
+	melt template.mlt \
 		-consumer avformat:videos/hls.m3u8 \
+		f=hls \
+		preset=fast \
 		s=$(RESOLUTION) \
-		preset=ultrafast \
 		start_number=0 \
 		hls_time=4 \
 		hls_list_size=0 \
 		real_time=-$(CORES) \
 		skip_loop_filter=all \
 		skip_frame=bidir
-	rm sample.tmp.mlt
+
+	rm template.mlt
 
 clean:
 	@echo 'Cleaning up...'
@@ -58,10 +62,11 @@ videos/dash.mpd:
 videos/hls.m3u8:
 	@echo 'Building HLS...'
 	cd videos && ffmpeg -i sample.mp4 \
-		-preset:v ultrafast \
+		-c:v $(VCODEC) \
+		-f hls \
+		-preset:v fast \
 		-s $(RESOLUTION) \
 		-start_number 0 \
-		-hls_time 5 \
+		-hls_time 4 \
 		-hls_list_size 0 \
-		-f hls \
 		hls.m3u8
