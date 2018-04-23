@@ -1,7 +1,8 @@
 CORES      ?= $(shell nproc)
 RESOLUTION := 1280x720
-USER       ?= world!
 TEMPLATE   ?= shotcut.mlt
+THUMB_TIME ?= 00:00:27.000
+USER       ?= world!
 VCODEC     ?= h264_nvenc
 export
 
@@ -12,7 +13,7 @@ define STREAMHEADER
 #EXT-X-MEDIA-SEQUENCE:0
 endef
 
-.PHONY: all clean dash hls stream
+.PHONY: all clean dash hls sample stream
 
 all: videos/sample.mp4
 # all: dash
@@ -20,6 +21,7 @@ all: hls
 
 dash: videos/dash.mpd
 hls: videos/hls.m3u8
+sample: videos/sample.mp4
 
 export STREAMHEADER
 stream: clean
@@ -43,11 +45,13 @@ stream:
 
 clean:
 	@echo 'Cleaning up...'
-	-find ./videos -type f -not -name '.keep' -not -name 'sample.mp4' -print0 | xargs -0 rm --
+	-find ./videos -type f -not -name '.keep' -not -name 'sample.mp4' -not -name 'sample.png' -print0 | xargs -0 rm --
 
 videos/sample.mp4:
 	@echo 'Downloading sample (Big Buck Bunny)'
 	wget -O videos/sample.mp4 http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4
+	@echo 'Generating thumbnail'
+	ffmpeg -i videos/sample.mp4 -ss 00:00:27.000 -vframes 1 videos/sample.png
 
 videos/dash.mpd:
 	@echo 'Building MPEG-DASH...'

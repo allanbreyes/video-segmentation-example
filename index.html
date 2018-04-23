@@ -17,6 +17,11 @@
 
     <!-- Bootstrap -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous" />
+    <style>
+      .center {
+        margin: 0 auto;
+      }
+    </style>
   </head>
   <body class="text-light" style="background-color: black;">
     <div class="container h-100">
@@ -45,7 +50,7 @@
         <!-- HLS -->
         <div class="col-12">
           <div class="embed-responsive embed-responsive-16by9">
-            <video id="hls" class="embed-responsive-item video-js vjs-default-skin" controls autoplay style="margin: 0 auto;"></video>
+            <video id="hls" class="center embed-responsive-item video-js vjs-default-skin" controls poster="/videos/sample.png"></video>
           </div>
           <script>
             var hls = videojs('hls');
